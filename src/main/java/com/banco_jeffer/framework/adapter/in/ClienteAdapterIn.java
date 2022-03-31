@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,5 +23,15 @@ public class ClienteAdapterIn   {
     public ResponseEntity<ClienteDto> novoCliente(@RequestBody @Valid Cliente cliente)
     {
         return ResponseEntity.ok(clienteUseCase.SaveCliente(cliente));
+    }
+
+    @Transactional
+    @CacheEvict(value = "/consulta_status_cliente", allEntries = true)
+    @GetMapping("/consulta_status_cliente")
+    public ResponseEntity<ClienteDto> consulta_status_cliente(@RequestParam(value = "cpf",
+                                                              required=false,
+                                                              defaultValue = "0") String cpf)
+    {
+        return ResponseEntity.ok(clienteUseCase.FincByCpf(cpf));
     }
 }
