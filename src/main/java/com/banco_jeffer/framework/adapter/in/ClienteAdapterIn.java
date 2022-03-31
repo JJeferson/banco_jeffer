@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/cliente")
@@ -22,7 +23,7 @@ public class ClienteAdapterIn   {
     @Transactional
     @CacheEvict(value = "/novo_cliente", allEntries = true)
     @PostMapping("/novo_cliente")
-    public ResponseEntity<ClienteDto> novoCliente(@RequestBody @Validated Cliente cliente)
+    public ResponseEntity<ClienteDto> novoCliente(@RequestBody @Valid Cliente cliente)
     {
         return ResponseEntity.ok(clienteUseCase.SaveCliente(cliente));
     }

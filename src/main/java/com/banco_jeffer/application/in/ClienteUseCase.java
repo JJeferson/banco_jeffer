@@ -7,5 +7,5 @@ public interface ClienteUseCase {
     ClienteDto SaveCliente (Cliente cliente);
     ClienteDto AlteraCliente (Cliente cliente);
     ClienteDto FindById(long id);
-    ClienteDto FincByCpf(long cpf);
+    ClienteDto FincByCpf(String cpf);
 }

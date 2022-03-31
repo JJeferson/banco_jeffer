@@ -5,5 +5,5 @@ import com.banco_jeffer.domain.Cliente;
 public interface ClientePortOut {
     Cliente SaveCliente (Cliente cliente);
     Cliente FindById(long id);
-    Cliente FindByCpf(long cpf);
+    Cliente FindByCpf(String cpf);
 }
