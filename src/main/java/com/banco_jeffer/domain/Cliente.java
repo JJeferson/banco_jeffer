@@ -2,8 +2,8 @@ package com.banco_jeffer.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.validation.annotation.Validated;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 
@@ -15,8 +15,9 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long clienteid;
-    @NotNull("Nome precisa ser preenchido")
+    @NonNull
     private String nome;
-    @NotNull("CPF precisa ser preenchido")
-    private long   cpf;
+    @NonNull
+    private String  cpf;
+
 }

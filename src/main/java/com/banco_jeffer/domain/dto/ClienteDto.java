@@ -6,5 +6,5 @@ import lombok.Setter;
 @Setter
 public class ClienteDto {
     private String nome;
-    private long   cpf;
+    private String  cpf;
 }

@@ -8,7 +8,6 @@ import com.banco_jeffer.domain.dto.ClienteDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 
 @Service
 public class ClienteService implements ClienteUseCase {
@@ -42,15 +41,27 @@ public class ClienteService implements ClienteUseCase {
     }
 
     @Override
-    public ClienteDto FincByCpf(long cpf) {
+    public ClienteDto FincByCpf(String cpf) {
         return converteDTO(clientePortOut.FindByCpf(cpf));
     }
 
     private void validaCliente(Cliente c){
+
+
+        boolean somenteNumeros = c.getCpf().matches("[0-9]+");
+        if(somenteNumeros==false){
+            throw new InternalServerError("CPF somente numeros devem ser informados");
+        }
+        boolean somente11Caracteres = c.getCpf().matches("\\d{11}");
+        if(somente11Caracteres==false){
+            throw new InternalServerError("CPF são 11 caracteres");
+        }
+
         Cliente encontraPeloCPF = clientePortOut.FindByCpf(c.getCpf());
         if(encontraPeloCPF != null){
             throw new InternalServerError("CPF já cadastrado, cliente já existe");
         }
+
 
     }
 
