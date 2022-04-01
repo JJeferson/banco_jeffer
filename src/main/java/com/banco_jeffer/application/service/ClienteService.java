@@ -5,26 +5,48 @@ import com.banco_jeffer.application.out.ClientePortOut;
 import com.banco_jeffer.config.controller_advice.exceptions.InternalServerError;
 import com.banco_jeffer.config.controller_advice.exceptions.NotFoundException;
 import com.banco_jeffer.domain.Cliente;
+import com.banco_jeffer.domain.ContaCliente;
 import com.banco_jeffer.domain.dto.ClienteDto;
 import com.banco_jeffer.domain.enums.StatusCliente;
+import com.banco_jeffer.domain.enums.TipoConta;
+import com.banco_jeffer.framework.adapter.repository.ContaClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ClienteService implements ClienteUseCase {
     @Autowired
     ClientePortOut clientePortOut;
+    @Autowired
+    ContaClienteRepository contaClienteRepository;
 
     @Override
     public ClienteDto SaveCliente(Cliente cliente) {
         try {
             validaCliente(cliente);
             cliente.setStatusCliente(StatusCliente.A);
-            ClienteDto dto = converteDTO(clientePortOut.SaveCliente(cliente));
+
+
+            Cliente novoCliente = clientePortOut.SaveCliente(cliente);
+
+            ContaCliente novaConta = new ContaCliente();
+            novaConta.setTipoConta(TipoConta.C);
+            novaConta.setSaldo(0);
+            novaConta.setCliente(novoCliente);
+
+            contaClienteRepository.save(novaConta);
+
+            ClienteDto dto = converteDTO(novoCliente);
             if(dto==null){
                 throw new InternalServerError("Erro ao Salvar");
             }
+            List<ContaCliente> lista = new ArrayList();
+            lista.add(novaConta);
+            dto.setContasCliente(lista);
             return dto;
 
         }catch (JpaSystemException e){
@@ -86,7 +108,9 @@ public class ClienteService implements ClienteUseCase {
         ClienteDto dto = new ClienteDto();
         dto.setNome(c.getNome());
         dto.setCpf(c.getCpf());
-        dto.setStatusCliente(c.getStatusCliente());
+        dto.setStatusCliente(c.getStatusCliente().getDescricao());
+
+        dto.setContasCliente(c.getContasCliente());
         return  dto;
     }
 
